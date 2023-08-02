@@ -6,7 +6,7 @@ const ctx = canvas.getContext('2d');
 const bird = { x: 50, y: canvas.height / 2, speedY: 0, gravity: 0.5, jumpStrength: -8 };
 const pipes = [];
 const pipeWidth = 20;
-const pipeGap = 300; 
+const pipeGap = 200; 
 let score = 0;
 let isGameOver = false;
 
@@ -36,14 +36,16 @@ function gameLoop() {
   
     // Generate pipes 
     if (Math.random() < 0.01) {
-      const pipeHeight = Math.floor(Math.random() * (5 - 1 + 1)) + 1 * (canvas.height - pipeGap);
+      let rand = Math.random() * (0.6 - 0.1) + 0.1;
+      const pipeHeight =  rand * (canvas.height - pipeGap);
       pipes.push({ x: canvas.width, y: 0, height: pipeHeight });
-      pipes.push({ x: canvas.width, y: pipeHeight + pipeGap, height: canvas.height - pipeHeight - pipeGap });
+      pipes.push({ x: canvas.width, y: pipeHeight   + pipeGap, height: canvas.height - pipeHeight - pipeGap });
     }
 
-    // Update pipes position
+    // Update pipes position 
     for (let i = 0; i < pipes.length; i++) {
-      pipes[i].x -= 2;
+      pipes[i].x -= 20;
+      console.log(pipes[i].x);
       // Check collision with bird
       if (bird.x + 15   > pipes[i].x && bird.x < pipes[i].x + pipeWidth &&
           (bird.y < pipes[i].height || bird.y + 15   > pipes[i].height + pipeGap)) {
@@ -67,7 +69,7 @@ function gameLoop() {
 
     // Check game over
     if (bird.y + 20 > canvas.height || bird.y < 0) {
-      isGameOver = true;
+      isGameOver = false;
     }
 
     // Continue game loop
