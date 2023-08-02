@@ -5,8 +5,8 @@ const ctx = canvas.getContext('2d');
 // Game variables
 const bird = { x: 50, y: canvas.height / 2, speedY: 0, gravity: 0.5, jumpStrength: -8 };
 const pipes = [];
-const pipeWidth = 40;
-const pipeGap = 100;
+const pipeWidth = 20;
+const pipeGap = 300; 
 let score = 0;
 let isGameOver = false;
 
@@ -28,12 +28,15 @@ function gameLoop() {
     bird.y += bird.speedY;
 
     // Draw bird
-    ctx.fillStyle = 'blue';
-    ctx.fillRect(bird.x, bird.y, 20, 20);
-
-    // Generate pipes
-    if (Math.random() < 0.02) {
-      const pipeHeight = Math.random() * (canvas.height - pipeGap);
+    ctx.beginPath();
+    ctx.arc(bird.x, bird.y - 4, 15, 0, 2 * Math.PI);
+    ctx.fillStyle = 'blue'; 
+    ctx.fill();
+    ctx.closePath();    
+  
+    // Generate pipes 
+    if (Math.random() < 0.01) {
+      const pipeHeight = Math.floor(Math.random() * (5 - 1 + 1)) + 1 * (canvas.height - pipeGap);
       pipes.push({ x: canvas.width, y: 0, height: pipeHeight });
       pipes.push({ x: canvas.width, y: pipeHeight + pipeGap, height: canvas.height - pipeHeight - pipeGap });
     }
@@ -42,16 +45,12 @@ function gameLoop() {
     for (let i = 0; i < pipes.length; i++) {
       pipes[i].x -= 2;
       // Check collision with bird
-      if (bird.x + 20 > pipes[i].x && bird.x < pipes[i].x + pipeWidth &&
-          (bird.y < pipes[i].height || bird.y + 20 > pipes[i].height + pipeGap)) {
+      if (bird.x + 15   > pipes[i].x && bird.x < pipes[i].x + pipeWidth &&
+          (bird.y < pipes[i].height || bird.y + 15   > pipes[i].height + pipeGap)) {
         isGameOver = true;
       }
       // Remove off-screen pipes
-      if (pipes[i].x + pipeWidth < 0) {
-        pipes.splice(i, 1);
-        i--;
-        score++;
-      }
+ 
     }
 
     // Draw pipes
