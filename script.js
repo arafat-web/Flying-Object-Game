@@ -5,7 +5,7 @@ const SCREEN_WIDTH = canvas.width;
 const SCREEN_HEIGHT = canvas.height;
 
 const GRAVITY = 0.5;
-const FLAP_HEIGHT = -8;
+const FLAP_HEIGHT = -6;
 
 const birdWidth = 20;
 const birdHeight = 20;
@@ -14,7 +14,51 @@ const pipeWidth = 20 ;
 const pipeHeight = 400;
 const pipeGap = 200;
 
+
 let score = 0;
+
+
+const clouds = [];
+const numClouds = 5;
+
+
+  // Create clouds
+for (let i = 0; i < numClouds; i++) {
+    clouds.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * (canvas.height * 0.3),
+      width: 50 + Math.random() * 150,
+      height: 30 + Math.random() * 30,
+      speed: Math.random() * 0.9 + 0.2,
+    });
+  }
+
+  function drawSky() {
+    // Clear the canvas
+
+  
+    // Draw clouds
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    clouds.forEach(cloud => {
+      ctx.beginPath();
+      ctx.beginPath();
+      ctx.arc(cloud.x, cloud.y, 10, Math.PI * 0.5, Math.PI * 1.5);
+      ctx.arc(cloud.x + 70, cloud.y - 10, 25, Math.PI * 1, Math.PI * 1.85);
+      ctx.arc(cloud.x + 152, cloud.y - 10, 50, Math.PI * 1.37, Math.PI * 1.91);
+      ctx.arc(cloud.x + 200, cloud.y, 10, Math.PI * 1.5, Math.PI * 0.5);
+      ctx.fill();
+      cloud.x += cloud.speed;
+  
+      // Reset cloud position when it goes off the screen
+      if (cloud.x > canvas.width) {
+        cloud.x = -cloud.width;
+        cloud.y = Math.random() * (canvas.height * 0.3);
+      }
+    });
+    
+  }
+  
+  
 
 // Bird object
 let bird = {
@@ -54,8 +98,8 @@ function gameLoop() {
     // Clear the canvas
     ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    // Draw the bird
-    drawBird();
+    drawSky(); 
+    drawBird(); 
 
     // Create new pipes
     if (pipes.length === 0 || pipes[pipes.length - 1].x < SCREEN_WIDTH - 200) {
@@ -76,7 +120,7 @@ function gameLoop() {
             (bird.y < pipe.height || bird.y + birdHeight > pipe.height + pipeGap)
         ) {
             // Collision detected, game over
-            // alert("Game Over! Your Score: " + score);
+            alert("Game Over! Your Score: " + score);
             resetGame();
             return;
         }
