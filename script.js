@@ -44,8 +44,7 @@ function gameLoop() {
 
     // Update pipes position 
     for (let i = 0; i < pipes.length; i++) {
-      pipes[i].x -= 20;
-      console.log(pipes[i].x);
+      pipes[i].x -= 2; 
       // Check collision with bird
       if (bird.x + 15   > pipes[i].x && bird.x < pipes[i].x + pipeWidth &&
           (bird.y < pipes[i].height || bird.y + 15   > pipes[i].height + pipeGap)) {
@@ -69,7 +68,7 @@ function gameLoop() {
 
     // Check game over
     if (bird.y + 20 > canvas.height || bird.y < 0) {
-      isGameOver = false;
+      isGameOver = true;
     }
 
     // Continue game loop
