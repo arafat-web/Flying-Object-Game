@@ -1,85 +1,109 @@
-// your-script.js
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-// Game variables
-const bird = { x: 50, y: canvas.height / 2, speedY: 0, gravity: 0.5, jumpStrength: -8 };
-const pipes = [];
-const pipeWidth = 20;
-const pipeGap = 200; 
+const SCREEN_WIDTH = canvas.width;
+const SCREEN_HEIGHT = canvas.height;
+
+const GRAVITY = 0.5;
+const FLAP_HEIGHT = -8;
+
+const birdWidth = 20;
+const birdHeight = 20;
+
+const pipeWidth = 20 ;
+const pipeHeight = 400;
+const pipeGap = 200;
+
 let score = 0;
-let isGameOver = false;
 
-// Event listener for jump
-document.addEventListener('keydown', (event) => {
-  if (event.code === 'Space' && !isGameOver) {
-    bird.speedY = bird.jumpStrength;
-  }
-});
+// Bird object
+let bird = {
+    x: 100,
+    y: SCREEN_HEIGHT / 2,
+    velocity: 0,
+};
 
-// Game loop
-function gameLoop() {
-  if (!isGameOver) {
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+// Array to hold pipes
+let pipes = [];
 
-    // Update bird position
-    bird.speedY += bird.gravity;
-    bird.y += bird.speedY;
-
-    // Draw bird
-    ctx.beginPath();
-    ctx.arc(bird.x, bird.y - 4, 15, 0, 2 * Math.PI);
-    ctx.fillStyle = 'blue'; 
-    ctx.fill();
-    ctx.closePath();    
-  
-    // Generate pipes 
-    if (Math.random() < 0.01) {
-      let rand = Math.random() * (0.6 - 0.1) + 0.1;
-      const pipeHeight =  rand * (canvas.height - pipeGap);
-      pipes.push({ x: canvas.width, y: 0, height: pipeHeight });
-      pipes.push({ x: canvas.width, y: pipeHeight   + pipeGap, height: canvas.height - pipeHeight - pipeGap });
+// Function to handle bird flap
+function handleSpacePress(event) {
+    if (event.code === "Space") {
+        bird.velocity = FLAP_HEIGHT;
     }
-
-    // Update pipes position 
-    for (let i = 0; i < pipes.length; i++) {
-      pipes[i].x -= 2; 
-      // Check collision with bird
-      if (bird.x + 15   > pipes[i].x && bird.x < pipes[i].x + pipeWidth &&
-          (bird.y < pipes[i].height || bird.y + 15   > pipes[i].height + pipeGap)) {
-        isGameOver = true;
-      }
-      // Remove off-screen pipes
- 
-    }
-
-    // Draw pipes
-    ctx.fillStyle = 'green';
-    for (let i = 0; i < pipes.length; i++) {
-      ctx.fillRect(pipes[i].x, pipes[i].y, pipeWidth, pipes[i].height);
-      ctx.fillRect(pipes[i].x, pipes[i].height + pipeGap, pipeWidth, canvas.height - pipes[i].height - pipeGap);
-    }
-
-    // Draw score
-    ctx.fillStyle = 'black';
-    ctx.font = '24px Arial';
-    ctx.fillText(`Score: ${score}`, 10, 30);
-
-    // Check game over
-    if (bird.y + 20 > canvas.height || bird.y < 0) {
-      isGameOver = true;
-    }
-
-    // Continue game loop
-    requestAnimationFrame(gameLoop);
-  } else {
-    // Game over message
-    ctx.fillStyle = 'red';
-    ctx.font = '36px Arial';
-    ctx.fillText('Game Over', canvas.width / 2 - 100, canvas.height / 2);
-  }
 }
 
-// Start the game loop
+document.addEventListener("keydown", handleSpacePress);
+
+function drawBird() {
+    ctx.fillStyle = "red";
+    ctx.fillRect(bird.x, bird.y, birdWidth, birdHeight);
+}
+
+function drawPipe(pipeX, pipeHeight) {
+    ctx.fillStyle = "green";
+    ctx.fillRect(pipeX, 0, pipeWidth, pipeHeight);
+    ctx.fillRect(pipeX, pipeHeight + pipeGap, pipeWidth, SCREEN_HEIGHT - (pipeHeight + pipeGap));
+}
+
+function gameLoop() {
+    // Update bird's position based on velocity
+    bird.y += bird.velocity;
+    bird.velocity += GRAVITY;
+
+    // Clear the canvas
+    ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    // Draw the bird
+    drawBird();
+
+    // Create new pipes
+    if (pipes.length === 0 || pipes[pipes.length - 1].x < SCREEN_WIDTH - 200) {
+        const pipeHeight = Math.floor(Math.random() * (SCREEN_HEIGHT - pipeGap));
+        pipes.push({ x: SCREEN_WIDTH, height: pipeHeight });
+    }
+
+    // Draw and move the pipes
+    for (let i = pipes.length - 1; i >= 0; i--) {
+        const pipe = pipes[i];
+        drawPipe(pipe.x, pipe.height);
+        pipe.x -= 5;
+
+        // Check for collisions with the bird
+        if (
+            bird.x + birdWidth > pipe.x &&
+            bird.x < pipe.x + pipeWidth &&
+            (bird.y < pipe.height || bird.y + birdHeight > pipe.height + pipeGap)
+        ) {
+            // Collision detected, game over
+            // alert("Game Over! Your Score: " + score);
+            resetGame();
+            return;
+        }
+
+        // Update score if the bird passes a pipe
+        if (bird.x === pipe.x + pipeWidth) {
+            score++;
+        }
+
+        // Remove off-screen pipes
+        if (pipe.x + pipeWidth < 0) {
+            pipes.splice(i, 1);
+        }
+    }
+
+    requestAnimationFrame(gameLoop);
+}
+
+function resetGame() {
+    bird = {
+        x: 100,
+        y: SCREEN_HEIGHT / 2,
+        velocity: 0,
+    };
+    pipes = [];
+    score = 0;
+}
+
 gameLoop();
+
