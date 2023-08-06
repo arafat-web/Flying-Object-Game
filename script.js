@@ -34,9 +34,7 @@ for (let i = 0; i < numClouds; i++) {
   }
 
   function drawSky() {
-    // Clear the canvas
 
-  
     // Draw clouds
     ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
     clouds.forEach(cloud => {
