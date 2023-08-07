@@ -126,6 +126,7 @@ function gameLoop() {
       score++;
     }
 
+    ctx.fillStyle = 'black';
     ctx.font = "20px Arial";
     ctx.fillText("Score: " + score, 10, 30);
 
@@ -148,7 +149,6 @@ function resetGame() {
   ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   ctx.font = "30px Arial";
   ctx.fillText("Score: " + score, 150, 205);
-  ctx.textAlign = "center";
 }
 
 gameLoop();
