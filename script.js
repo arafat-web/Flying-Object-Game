@@ -70,9 +70,6 @@ function handleSpacePress(event) {
 
 document.addEventListener("keydown", handleSpacePress);
 
-let newImage = new Image();
-newImage.src = 'bird.gif'
-
 function drawBird() {
   ctx.fillStyle = "red";
   ctx.fillRect(bird.x, bird.y, birdWidth, birdHeight);
@@ -104,8 +101,6 @@ function gameLoop() {
 
   // drawSky();   
   drawBird();
-  // ctx.drawImage(newImage, 0, 0, 50, 50);
-
   // Create new pipes
   if (pipes.length === 0 || pipes[pipes.length - 1].x < SCREEN_WIDTH - 200) {
     const pipeHeight = Math.floor(Math.random() * (SCREEN_HEIGHT - pipeGap));
@@ -116,7 +111,16 @@ function gameLoop() {
   for (let i = pipes.length - 1; i >= 0; i--) {
     const pipe = pipes[i];
     drawPipe(pipe.x, pipe.height);
-    pipe.x -= 5;
+    if(score < 100 ){
+      pipe.x -= 2;
+    }else if(score < 200 ){
+      pipe.x -= 3;
+    }else if(score > 300){
+      pipe.x -= 4;
+    }else{
+      pipe.x -= 5;
+    }
+
 
     // Check for collisions with the bird
     if (
@@ -131,7 +135,7 @@ function gameLoop() {
     }
 
     // Update score if the bird passes a pipe
-    if (bird.x === pipe.x + pipeWidth) {
+    if (bird.x === pipe.x) {
       score+=10;
     }
 
