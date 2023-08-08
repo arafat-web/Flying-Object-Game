@@ -70,32 +70,41 @@ function handleSpacePress(event) {
 
 document.addEventListener("keydown", handleSpacePress);
 
+let newImage = new Image();
+newImage.src = 'bird.gif'
+
 function drawBird() {
   ctx.fillStyle = "red";
   ctx.fillRect(bird.x, bird.y, birdWidth, birdHeight);
 }
 
 function drawPipe(pipeX, pipeHeight) {
-  ctx.fillStyle = "green";
+  ctx.fillStyle = "#7FAC71";
   ctx.fillRect(pipeX, 0, pipeWidth, pipeHeight);
   ctx.fillRect(
     pipeX,
-    pipeHeight + pipeGap,
+    pipeHeight + pipeGap - 50,
     pipeWidth,
     SCREEN_HEIGHT - (pipeHeight + pipeGap)
   );
 }
+function drawScore(){
+  ctx.fillStyle = 'black';
+  ctx.font = "20px Arial";
+  ctx.fillText("Score: " + score, 10, 30);
+}
 
 function gameLoop() {
   // Update bird's position based on velocity
-  bird.y += bird.velocity;
+  bird.y += bird.velocity;   
   bird.velocity += GRAVITY;
 
   // Clear the canvas
   ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-  drawSky();
+  // drawSky();   
   drawBird();
+  // ctx.drawImage(newImage, 0, 0, 50, 50);
 
   // Create new pipes
   if (pipes.length === 0 || pipes[pipes.length - 1].x < SCREEN_WIDTH - 200) {
@@ -113,7 +122,7 @@ function gameLoop() {
     if (
       bird.x + birdWidth > pipe.x &&
       bird.x < pipe.x + pipeWidth &&
-      (bird.y < pipe.height || bird.y + birdHeight > pipe.height + pipeGap)
+      (bird.y < pipe.height || bird.y + birdHeight > pipe.height + pipeGap - 50)
     ) {
       // Collision detected, game over
     //   alert("Game Over! Your Score: " + score);
@@ -123,12 +132,10 @@ function gameLoop() {
 
     // Update score if the bird passes a pipe
     if (bird.x === pipe.x + pipeWidth) {
-      score++;
+      score+=10;
     }
 
-    ctx.fillStyle = 'black';
-    ctx.font = "20px Arial";
-    ctx.fillText("Score: " + score, 10, 30);
+    drawScore();
 
     // Remove off-screen pipes
     if (pipe.x + pipeWidth < 0) {
@@ -146,6 +153,7 @@ function resetGame() {
   };
   pipes = [];
   // ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+  ctx.fillStyle = 'green';
   ctx.font = "30px Arial";
   ctx.fillText("Score: " + score, 150, 205);
    score = 0;
