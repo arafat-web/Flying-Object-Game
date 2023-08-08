@@ -144,9 +144,9 @@ function resetGame() {
     y: SCREEN_HEIGHT / 2,
     velocity: 0,
   };
-//   pipes = [];
-//   score = 0;
-  ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+  pipes = [];
+  score = 0;
+  // ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   ctx.font = "30px Arial";
   ctx.fillText("Score: " + score, 150, 205);
 }
