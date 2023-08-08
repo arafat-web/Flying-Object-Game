@@ -145,10 +145,10 @@ function resetGame() {
     velocity: 0,
   };
   pipes = [];
-  score = 0;
   // ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
   ctx.font = "30px Arial";
   ctx.fillText("Score: " + score, 150, 205);
+   score = 0;
 }
 
 gameLoop();
